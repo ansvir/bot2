@@ -22,6 +22,10 @@ public class EventService {
     return eventRepository.findAll();
   }
 
+  public List<Event> getAllByChatId(Long id) {
+    return eventRepository.findAllByChatId(id);
+  }
+
   public Event getById(Long id) {
     return eventRepository.getById(id);
   }

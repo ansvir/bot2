@@ -5,6 +5,8 @@ import com.project.bot.command.event.EventDeleteCommand;
 import com.project.bot.command.event.EventEditDateCommand;
 import com.project.bot.command.event.EventEditDescriptionCommand;
 import com.project.bot.command.event.EventEditNameCommand;
+import com.project.bot.command.event.EventEditPlaceCommand;
+import com.project.bot.command.event.ParticipantEditWillingDateCommand;
 import com.project.bot.command.event.EventListCommand;
 import com.project.bot.command.event.EventNewCommand;
 import com.project.bot.command.event.EventRemoveMeCommand;
@@ -21,9 +23,7 @@ public enum CommandFullOperation {
           + CommandFlag.LIST.getName(),
       "Перечислить события и участников.",
       CommandType.EVENT,
-      List.of(
-          CommandFlag.LIST
-      ),
+      List.of(),
       0
   ),
   EVENT_NEW(
@@ -33,7 +33,7 @@ public enum CommandFullOperation {
       "Создать новое событие. Юзаем: !событие создать \"имя_события\"",
       CommandType.EVENT,
       List.of(
-          CommandFlag.NEW
+          Placeholder.NAME_DOUBLE_QUOTES
       ),
       1
   ),
@@ -51,8 +51,8 @@ public enum CommandFullOperation {
       + "4) Любая, поставьте всеравно.",
       CommandType.EVENT,
       List.of(
-          CommandFlag.ADD,
-          CommandFlag.ME
+          Placeholder.NUMBER,
+          Placeholder.DATE
       ),
       2),
   EVENT_REMOVE_ME(
@@ -64,8 +64,7 @@ public enum CommandFullOperation {
       "Удалить меня из события. Юзаем: !событие удалить меня [номер]",
       CommandType.EVENT,
       List.of(
-          CommandFlag.REMOVE,
-          CommandFlag.ME
+          Placeholder.NUMBER
       ),
       1),
   EVENT_EDIT_DESC(
@@ -78,9 +77,8 @@ public enum CommandFullOperation {
           + ". Не забудь двойные кавычки!!!",
       CommandType.EVENT,
       List.of(
-          CommandFlag.ADD,
-          CommandFlag.EDIT,
-          CommandFlag.DESCRIPTION
+          Placeholder.NUMBER,
+          Placeholder.DESC
       ),
       2),
   EVENT_EDIT_DATE(
@@ -93,9 +91,8 @@ public enum CommandFullOperation {
           + " будь внимательней, формат даты должен быть такой: 20/04/2021.",
       CommandType.EVENT,
       List.of(
-          CommandFlag.ADD,
-          CommandFlag.EDIT,
-          CommandFlag.DATE
+          Placeholder.NUMBER,
+          Placeholder.DATE
       ),
       2),
   EVENT_DEL(
@@ -105,7 +102,7 @@ public enum CommandFullOperation {
       "Удалить событие. Ты точно уверен? Не вернуть. Юзаем: !событие удалить [номер].",
       CommandType.EVENT,
       List.of(
-          CommandFlag.DELETE
+          Placeholder.NUMBER
       ),
       1),
   EVENT_EDIT_NAME(
@@ -114,24 +111,44 @@ public enum CommandFullOperation {
           + CommandFlag.EDIT.getName()
           + " "
           + CommandFlag.NAME.getName(),
-      "Удалить событие. Ты точно уверен? Не вернуть. Юзаем: !событие удалить [номер].",
+      "Изменить имя события. Юзаем: !событие меняем имя [номер] \"Новое_имя\".",
       CommandType.EVENT,
       List.of(
-          CommandFlag.EDIT,
-          CommandFlag.NAME
+          Placeholder.NUMBER,
+          Placeholder.NAME_DOUBLE_QUOTES
+      ),
+      2),
+  EVENT_EDIT_PLACE(
+      CommandType.EVENT.getName()
+          + " "
+          + CommandFlag.EDIT.getName()
+          + " "
+          + CommandFlag.PLACE.getName(),
+      "Изменить место события. Юзаем: !событие меняем место [номер] \"Новое_место\".",
+      CommandType.EVENT,
+      List.of(
+          Placeholder.NUMBER,
+          Placeholder.PLACE_DOUBLE_QUOTES
+      ),
+      2),
+  PARTICIPANT_EDIT_WILLING_DATE(
+      CommandType.PARTICIPANT.getName()
+          + " "
+          + CommandFlag.EDIT.getName()
+          + " "
+          + CommandFlag.WILLING_DATE.getName(),
+      "Изменить желаему дату участника на данное событие. Юзаем: !событие меняем желаемую дату [номер] [дата], где "
+          + "дата:\n"
+          + "1) Конкретная, например: 20/04/2014\n"
+          + "2) В диапазоне, например \"20/04/2014 - 25/04/2014\"\n"
+          + "3) Неизвестная, просто оставьте незнаю\n"
+          + "4) Любая, поставьте всеравно.",
+      CommandType.PARTICIPANT,
+      List.of(
+          Placeholder.NUMBER,
+          Placeholder.DATE_DOUBLE_QUOTES
       ),
       2);
-//  EVENT_DESC(
-//      CommandType.EVENT.getName()
-//          + " "
-//          + CommandFlag.DESCRIPTION.getName(),
-//      "View event description. Usage: !event desc [number]\nNumber - number of event in list",
-//      CommandType.EVENT,
-//      List.of(
-//          CommandFlag.DESCRIPTION
-//      ),
-//      1
-//  ),
 //
 //  EVENT_ADD_PART(
 //      CommandType.EVENT.getName()
@@ -154,20 +171,20 @@ public enum CommandFullOperation {
   private String description;
   private Command command;
   private CommandType commandType;
-  private List<CommandFlag> flags;
+  private List<Placeholder> placeholders;
   private Integer placeholdersAmount;
 
   CommandFullOperation(
       String name,
       String description,
       CommandType command,
-      List<CommandFlag> flags,
+      List<Placeholder> placeholders,
       Integer placeholdersAmount
   ) {
     this.name = name;
     this.description = description;
     this.commandType = command;
-    this.flags = flags;
+    this.placeholders = placeholders;
     this.placeholdersAmount = placeholdersAmount;
   }
 
@@ -183,8 +200,8 @@ public enum CommandFullOperation {
     return commandType;
   }
 
-  public List<CommandFlag> getFlags() {
-    return flags;
+  public List<Placeholder> getPlaceholders() {
+    return placeholders;
   }
 
   public Integer getPlaceholdersAmount() {
@@ -218,6 +235,10 @@ public enum CommandFullOperation {
     private EventEditNameCommand eventEditNameCommand;
     @Autowired
     private EventRemoveMeCommand eventRemoveMeCommand;
+    @Autowired
+    private ParticipantEditWillingDateCommand participantEditWillingDateCommand;
+    @Autowired
+    private EventEditPlaceCommand eventEditPlaceCommand;
 
     @PostConstruct
     public void postConstruct() {
@@ -229,6 +250,8 @@ public enum CommandFullOperation {
       CommandFullOperation.EVENT_DEL.setCommand(eventDeleteCommand);
       CommandFullOperation.EVENT_EDIT_NAME.setCommand(eventEditNameCommand);
       CommandFullOperation.EVENT_REMOVE_ME.setCommand(eventRemoveMeCommand);
+      CommandFullOperation.PARTICIPANT_EDIT_WILLING_DATE.setCommand(participantEditWillingDateCommand);
+      CommandFullOperation.EVENT_EDIT_PLACE.setCommand(eventEditPlaceCommand);
     }
   }
 }

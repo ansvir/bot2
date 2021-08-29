@@ -2,6 +2,7 @@ package com.project.bot.service;
 
 import com.project.bot.model.event.Participant;
 import com.project.bot.repository.ParticipantRepository;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

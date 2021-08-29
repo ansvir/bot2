@@ -7,6 +7,7 @@ import com.project.bot.service.EventService;
 import com.project.bot.util.Parser;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -28,17 +29,20 @@ public class EventNewCommand implements Command {
   public String execute(Update update, SendMessage.SendMessageBuilder messageBuilder) {
     String name = parser.parsePlaceholders(CommandFullOperation.EVENT_NEW, update.getMessage().getText())
         .stream()
+        .skip(1)
         .findFirst()
         .orElse("Пусто");
     Event created = service.save(
         new Event(
+            update.getMessage().getChatId(),
             name,
             "Описания пока нет",
             "Где - неизвестно",
-            LocalDate.now()
+            LocalDate.now(),
+            Set.of()
         )
     );
 
-        return "Событие \"" + created.getName() + "\" с номером [" + created.getId() + "] создано!";
+        return "\uD83D\uDFE2 Событие \"" + created.getName() + "\" создано!";
   }
 }

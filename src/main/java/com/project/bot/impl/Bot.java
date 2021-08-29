@@ -45,7 +45,14 @@ public class Bot extends TelegramLongPollingBot {
         return;
       }
       Command command = parser.defineCommand(messageText);
-      messageBuilder.text(command.execute(update, messageBuilder));
+      try {
+        messageBuilder.text(command.execute(update, messageBuilder));
+      } catch (Exception e) {
+        messageBuilder.text("\uD83D\uDD34 При обработке запроса возникла ошибка на моей стороне \uD83D\uDE14. "
+            + "Попробуйте позже!");
+        e.printStackTrace();
+      }
+
       try {
         execute(messageBuilder.build());
       } catch (TelegramApiException e) {

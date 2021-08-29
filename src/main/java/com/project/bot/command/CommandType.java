@@ -7,7 +7,8 @@ public enum CommandType {
   UNRECOGNIZED("unrecognized"),
   RATE("rate"),
   R("r"),
-  EVENT("событие");
+  EVENT("событие"),
+  PARTICIPANT("участник");
 
   private String name;
 

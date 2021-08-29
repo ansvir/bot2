@@ -117,39 +117,6 @@ public class Parser {
     )
         .map(String.class::cast)
         .collect(Collectors.toList());
-
-//    if (command == CommandFullOperation.EVENT_EDIT_DESC
-//        || command == CommandFullOperation.EVENT_NEW) {
-//
-//      return List.of(
-//          message.substring(
-//              botConfig.getCommandDelimiter().length()
-//                  + CommandFullOperation.EVENT_EDIT_DESC.getName().length()
-//                  + 1,
-//              message.indexOf("\"")
-//                  - 1
-//          ),
-//          message.substring(message.indexOf("\"") + 1, message.lastIndexOf("\"")
-//          )
-//      );
-//    } else if (command == CommandFullOperation.EVENT_EDIT_DATE) {
-//      return List.of(
-//          message.substring(
-//              botConfig.getCommandDelimiter().length()
-//                  + CommandFullOperation.EVENT_EDIT_DESC.getName().length()
-//                  + 1,
-//              message.lastIndexOf(" ")
-//          ),
-//          message.substring(message.lastIndexOf(" ") + 1)
-//      );
-//    }
-//
-//    return Arrays.stream(message.substring(
-//        botConfig.getCommandDelimiter().length()
-//            + command.getName().length()
-//    )
-//        .split(" "))
-//        .filter(it -> it.length() > 0).collect(Collectors.toList());
   }
 
   public String parseWillingDate(String date) {

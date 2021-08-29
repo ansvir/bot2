@@ -2,14 +2,11 @@ package com.project.bot.command.service;
 
 import com.project.bot.command.Command;
 import com.project.bot.command.CommandFullOperation;
+import com.project.bot.command.Placeholder;
 import com.project.bot.config.BotConfig;
-import com.project.bot.impl.Bot;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -29,7 +26,7 @@ public class HelpCommand implements Command {
     User currentUser = update.getMessage().getFrom();
     String userFirstName = currentUser.getFirstName();
     StringBuilder message = new StringBuilder();
-    message.append(detectGoodPartOfADayString() + " ");
+    message.append(detectGreetingBeforePartOfADayString() + " ");
     message.append(detectPartOfADayString());
     message.append(", ");
     message.append(userFirstName);
@@ -38,19 +35,34 @@ public class HelpCommand implements Command {
         + "есть следующие команды:\n");
     message.append("\n");
     for (CommandFullOperation commandFullOperation : CommandFullOperation.values()) {
-      message.append(botConfig.getCommandDelimiter() + commandFullOperation.getName()
-          + " - "
+      List<Placeholder> placeholders = commandFullOperation.getPlaceholders();
+      StringBuilder placeholdersString = new StringBuilder();
+      for (Placeholder placeholder : placeholders) {
+        placeholdersString.append(placeholder.getValue());
+        placeholdersString.append(" ");
+      }
+      if (!placeholdersString.toString().isBlank()) {
+        placeholdersString = new StringBuilder(
+            placeholdersString.substring(0, placeholdersString.length() - 1)
+        );
+      }
+
+      message.append(botConfig.getCommandDelimiter()
+          + commandFullOperation.getName()
+          + " "
+          + placeholdersString
+          + "\n"
           + (commandFullOperation.getDescription() == null
           ? "Описания пока нет"
           : commandFullOperation.getDescription())
               + "\n\n"
       );
     }
-    message.append("С чего начнем?");
+    message.append("С чего начнем❓");
     return message.toString();
   }
 
-  private String detectGoodPartOfADayString() {
+  private String detectGreetingBeforePartOfADayString() {
     switch (detectPartOfADayString()) {
       case "ночи": {
         return "Доброй";

@@ -24,7 +24,9 @@ public enum CommandFlag {
   DATE("дату"),
   DELETE("удалить"),
   NAME("имя"),
-  REMOVE("удалить");
+  REMOVE("удалить"),
+  WILLING_DATE("желаемую дату"),
+  PLACE("место");
 
   private String name;
 

@@ -33,13 +33,13 @@ public class EventEditDateCommand implements Command {
     try {
       eventId = Long.parseLong(parameters.get(0));
     } catch (NumberFormatException e) {
-      return "Неправильный номер события. Внимательней, плиз";
+      return "\uD83D\uDFE0 Неправильный номер события. Внимательней, плиз";
     }
 
     Event event = eventService.getById(eventId);
 
     if (event == null) {
-      return "Неправильный номер события. Внимательней, плиз";
+      return "\uD83D\uDFE0 Неправильный номер события. Внимательней, плиз";
     }
 
     try {
@@ -50,7 +50,7 @@ public class EventEditDateCommand implements Command {
           )
       );
     } catch (Exception e) {
-      return "Формат даты некорректен. Используйте:\n\tКонкретная дата: dd/MM/yyyy"
+      return "\uD83D\uDFE0 Формат даты некорректен. Используйте:\n\tКонкретная дата: dd/MM/yyyy"
           + "\n\tДиапазон: dd/MM/yyyy - dd/MM/yyyy. Первая дата должна быть не позднее второй."
           + "\n\t Если не знаете, просто вместо даты впишите \"незнаю\""
           + "\n\t Если вам все равно, так и впишите \"всеравно\"";
@@ -58,6 +58,6 @@ public class EventEditDateCommand implements Command {
 
     Event saved = eventService.save(event);
 
-    return "Дата события " + saved.getName() + " обновлена на " + event.getDate().toString() + ".";
+    return "\uD83D\uDD35 Дата события " + saved.getName() + " обновлена на " + event.getDate().toString() + ".";
   }
 }

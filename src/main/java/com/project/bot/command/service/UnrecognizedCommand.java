@@ -20,6 +20,15 @@ public class UnrecognizedCommand implements Command {
   @Override
   public String execute(Update update, SendMessage.SendMessageBuilder messageBuilder) {
     String helpCommand = botConfig.getCommandDelimiter() + CommandFullService.HELP.getName();
+    String[] sadSmiles = new String[] {
+        "\uD83D\uDE16",
+        "\uD83D\uDE31",
+        "\uD83D\uDE22",
+        "\uD83D\uDE13",
+        "\uD83D\uDE29",
+        "☹",
+        "\uD83D\uDE2E"
+    };
     String[] responses = new String[]{
         "Я не понял команды, попробуй посмотреть '" + helpCommand + "'.",
         "Что? Плиз, посмотри инструкцию, ты ошибься - '" + helpCommand + "'.",
@@ -29,6 +38,8 @@ public class UnrecognizedCommand implements Command {
             + helpCommand
             + "'."
     };
-    return responses[new Random().nextInt(4)];
+    return sadSmiles[new Random().nextInt(sadSmiles.length - 1)]
+    + " "
+    + responses[new Random().nextInt(responses.length - 1)];
   }
 }
